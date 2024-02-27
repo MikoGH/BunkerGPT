@@ -2,15 +2,16 @@ import random
 import json
 
 traits_russian = {
-            'gender_age' : 'пол и возраст',
-            'name' : 'имя',
-            'body' : 'телосложение',
-            'health' : 'здоровье',
-            'job' : 'профессия',
-            'hobby' : 'хобби',
-            'inventory' : 'инвентарь',
-            'additional' : 'доп.информация'
-        }
+    'gender_age' : 'пол и возраст',
+    'name' : 'имя',
+    'body' : 'телосложение',
+    'health' : 'здоровье',
+    'job' : 'профессия',
+    'hobby' : 'хобби',
+    'phobia' : 'фобия',
+    'inventory' : 'инвентарь',
+    'additional' : 'доп.информация'
+}
 
 age_russian = {
     0 : 'лет',
@@ -63,9 +64,11 @@ class Player():
         self.job_experience = random.choice(data['experience'])     # опыт работы
         self.hobby = random.choice(data['hobbies'])                 # хобби
         self.hobby_experience = random.choice(data['experience'])   # опыт хобби
+        self.phobia = random.choice(data['phobias'])                # фобия
         self.inventory = random.choice(data['inventories'])         # инвентарь
         self.inventory_count = random.randint(1,20)                 # инвентарь кол-во
         self.additional = random.choice(data['additional'])         # доп.информация
+        self.active = True
         self.known = {
             'gender_age' : False,
             'name' : True,
@@ -73,6 +76,7 @@ class Player():
             'health' : False,
             'job' : False,
             'hobby' : False,
+            'phobia' : False,
             'inventory' : False,
             'additional' : False
         }
@@ -83,44 +87,59 @@ class Player():
             'health' : '',
             'job' : '',
             'hobby' : '',
+            'phobia' : '',
             'inventory' : '',
             'additional' : ''
         }
+        self.traits = [
+            f'Пол и возраст: {self.trait_gender_age}. {self.explanations['gender_age']}',
+            f'Телосложение: {self.trait_body}. {self.explanations['body']}',
+            f'Здоровье: {self.trait_health}. {self.explanations['health']}',
+            f'Профессия: {self.trait_job}. {self.explanations['job']}',
+            f'Хобби: {self.trait_hobby}. {self.explanations['hobby']}',
+            f'Фобия: {self.trait_phobia}. {self.explanations['phobia']}',
+            f'Инвентарь: {self.trait_inventory}. {self.explanations['inventory']}',
+            f'Доп.информация: {self.trait_additional}. {self.explanations['additional']}'
+        ]
 
     @property
     def trait_name(self):
-        if not(self.known['name']): return 'Неизвестно'
+        # if not(self.known['name']): return 'Неизвестно'
         return self.name
     @property
     def trait_gender_age(self):
-        if not(self.known['gender_age']): return 'Неизвестно'
+        # if not(self.known['gender_age']): return 'Неизвестно'
         return f'{self.gender}, {self.age} {age_russian[self.age % 10]} ({get_age_name(self.age, self.gender)})'
     @property
     def trait_body(self):
-        if not(self.known['body']): return 'Неизвестно'
+        # if not(self.known['body']): return 'Неизвестно'
         return f'{self.body}'
     @property
     def trait_health(self):
-        if not(self.known['health']): return 'Неизвестно'
+        # if not(self.known['health']): return 'Неизвестно'
         if self.is_healthy:
             return 'Полностью здоров'
         else:
             return f'{self.disease} ({self.disease_stage} степень)'
     @property
     def trait_job(self):
-        if not(self.known['job']): return 'Неизвестно'
+        # if not(self.known['job']): return 'Неизвестно'
         return f'{self.job} ({self.job_experience})'
     @property
     def trait_hobby(self):
-        if not(self.known['hobby']): return 'Неизвестно'
+        # if not(self.known['hobby']): return 'Неизвестно'
         return f'{self.hobby} ({self.hobby_experience})'
     @property
+    def trait_phobia(self):
+        # if not(self.known['phobia']): return 'Неизвестно'
+        return self.phobia
+    @property
     def trait_inventory(self):
-        if not(self.known['inventory']): return 'Неизвестно'
+        # if not(self.known['inventory']): return 'Неизвестно'
         return f'{self.inventory}'
     @property
     def trait_additional(self):
-        if not(self.known['additional']): return 'Неизвестно'
+        # if not(self.known['additional']): return 'Неизвестно'
         return self.additional
 
     # Получить краткие сведения о персонаже
@@ -131,6 +150,7 @@ class Player():
             f'{f'Здоровье: {self.trait_health}. {self.explanations['health']}' if self.known['health'] else ''}',
             f'{f'Профессия: {self.trait_job}. {self.explanations['job']}' if self.known['job'] else ''}',
             f'{f'Хобби: {self.trait_hobby}. {self.explanations['hobby']}' if self.known['hobby'] else ''}',
+            f'{f'Фобия: {self.trait_phobia}. {self.explanations['phobia']}' if self.known['phobia'] else ''}',
             f'{f'Инвентарь: {self.trait_inventory}. {self.explanations['inventory']}' if self.known['inventory'] else ''}',
             f'{f'Доп.информация: {self.trait_additional}. {self.explanations['additional']}' if self.known['additional'] else ''}'
         ]
@@ -138,13 +158,18 @@ class Player():
         unknown_traits = [traits_russian[trait] for trait in self.known.keys() if not(self.known[trait])]
         return f'{f'Известные сведения о {self.name}:\n{'\n'.join(known_traits)}' if len(known_traits) > 0 else ''}\n{f'Неизвестные сведения о {self.name}:\n{','.join(unknown_traits)}' if len(unknown_traits) > 0 else ''}'
     
+    def get_info_own(self):
+        known_traits = [traits_russian[trait] for trait in self.known.keys() if self.known[trait]]
+        unknown_traits = [traits_russian[trait] for trait in self.known.keys() if not(self.known[trait])]
+        return f'{f'Сведения о тебе:\n{'\n'.join(self.traits)}'}\n{f'Остальные знают о тебе:\n{','.join(known_traits)}' if len(known_traits) > 0 else ''}\n{f'Неизвестные остальным сведения о тебе:\n{','.join(unknown_traits)}' if len(unknown_traits) > 0 else ''}'
+    
 
 class Players():
     def __init__(self, n):
-        self.players = []
+        self.players = {}
         for i in range(n):
             new_player = Player()
-            self.players.append(new_player)
+            self.players.update({new_player.name : new_player})
 
-    def get_info(self):
-        return '\n\n'.join([player.get_info() for player in self.players])
+    def get_info(self, player_name=''):
+        return '\n\n'.join([player.get_info() for player in self.players.values() if player.name != player_name])
