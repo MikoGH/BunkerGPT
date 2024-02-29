@@ -91,7 +91,10 @@ class Player():
             'inventory' : '',
             'additional' : ''
         }
-        self.traits = [
+        
+    @property
+    def traits(self):
+        return [
             f'Пол и возраст: {self.trait_gender_age}. {self.explanations['gender_age']}',
             f'Телосложение: {self.trait_body}. {self.explanations['body']}',
             f'Здоровье: {self.trait_health}. {self.explanations['health']}',
@@ -101,6 +104,19 @@ class Player():
             f'Инвентарь: {self.trait_inventory}. {self.explanations['inventory']}',
             f'Доп.информация: {self.trait_additional}. {self.explanations['additional']}'
         ]
+    
+    def get_trait(self, trait):
+        return {
+            'gender_age' : self.trait_gender_age,
+            'name' : self.trait_name,
+            'body' : self.trait_body,
+            'health' : self.trait_health,
+            'job' : self.trait_job,
+            'hobby' : self.trait_hobby,
+            'phobia' : self.trait_phobia,
+            'inventory' : self.trait_inventory,
+            'additional' : self.trait_additional
+        }[trait]
 
     @property
     def trait_name(self):
@@ -161,7 +177,7 @@ class Player():
     def get_info_own(self):
         known_traits = [traits_russian[trait] for trait in self.known.keys() if self.known[trait]]
         unknown_traits = [traits_russian[trait] for trait in self.known.keys() if not(self.known[trait])]
-        return f'{f'Сведения о тебе:\n{'\n'.join(self.traits)}'}\n{f'Остальные знают о тебе:\n{','.join(known_traits)}' if len(known_traits) > 0 else ''}\n{f'Неизвестные остальным сведения о тебе:\n{','.join(unknown_traits)}' if len(unknown_traits) > 0 else ''}'
+        return f'{f'Сведения о тебе:\n{'\n'.join([f'{i+1}. {self.traits[i]}' for i in range(len(self.traits))])}'}\n{f'Остальные знают о тебе:\n{','.join(known_traits)}' if len(known_traits) > 0 else ''}\n{f'Неизвестные остальным сведения о тебе:\n{','.join(unknown_traits)}' if len(unknown_traits) > 0 else ''}'
     
 
 class Players():
@@ -171,5 +187,5 @@ class Players():
             new_player = Player()
             self.players.update({new_player.name : new_player})
 
-    def get_info(self, player_name=''):
-        return '\n\n'.join([player.get_info() for player in self.players.values() if player.name != player_name])
+    def get_info(self, player_name='', active=False):
+        return '\n\n'.join([player.get_info() for player in self.players.values() if player.name != player_name and (player.active or active==False)])

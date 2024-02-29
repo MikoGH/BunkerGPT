@@ -23,25 +23,29 @@ class Story():
         self.players = Players(n_players)
         self.story_name = random.choice(list(data.keys()))
         self.story = data[self.story_name]
-        self.places = n_players // 2
+        self.places = (n_players+1) // 2
 
-    def get_static_info(self, player_name=''):
-        return f'{instructions}\nКатаклизм: {self.story_name}.\n{self.story}\nЖелающие попасть в бункер:\n{self.players.get_info(player_name=player_name)}'
+    def get_static_info(self):
+        return f'{instructions}\nКатаклизм: {self.story_name}.\n{self.story}'
     
+    def get_players_info(self, player_name=''):
+        return f'Желающие попасть в бункер:\n{self.players.get_info(player_name=player_name, active=True)}'
+
     def get_person_info(self, player_name):
         return f'Ты отыгрываешь персонажа по имени {player_name}. {self.players.players[player_name].get_info_own()}'
     
-    def get_action(self, player, action):
-        if action == 'short':
-            return 'Выдели основную информацию из текста выше'
-        # if action == 'explain trait':
-        #     return 'Объясни, почему эта черта может быть полезна в бункере'
+    def get_action(self, player, action, trait=''):
         if action == 'vote':
-            return 'Напиши имя игрока, которого ты считаешь наименее полезным для бункера'
+            return 'Напиши имя игрока без склонений по падежам, которого ты считаешь наименее полезным для бункера. Затем объясни свой выбор.'
+        if action == 'explain trait':
+            return f'Как {trait} может быть полезно при жизни в бункере? Пиши от лица {player.name}.'
         if action == 'choose trait':
-            return f'Выбери одну черту из списка ниже, которую считаешь наиболее полезной для бункера. Напиши её точно так же, как она написана в списке. Затем поясни, почему эта черта полезна для бункера. \n{'\n'.join([trait for trait in player.known.keys() if not(player.known[trait])])}'
+            return f'Выбери одну черту из списка ниже, которую считаешь наиболее полезной для бункера. Напиши её точно так же, как она написана в списке. Только выбери, ничего не объясняй. \n{'\n'.join([trait for trait in player.known.keys() if not(player.known[trait])])}'
 
-    def get_request(self, player, action):
-        return self.get_static_info(player.name) + '\n' + self.get_person_info(player.name) + '\n' + self.get_action(player, action)
+    def get_request(self, player, action, trait=''):
+        if action == 'choose trait' or action == 'explain trait':
+            return self.get_static_info() + '\n' + self.get_action(player, action, trait)
+        return self.get_static_info() + '\n' + self.get_players_info(player.name) + '\n' + self.get_person_info(player.name) + '\n' + self.get_action(player, action)
+    
 
 
