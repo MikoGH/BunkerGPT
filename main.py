@@ -1,101 +1,75 @@
-import g4f
-from player import Player, Players, traits_russian
+from modules import *
+from player import Player, get_traits_text, get_traits_keys
 from story import Story
+from texts import Text
 
-# Возвращает ответ нейросети на заданный вопрос
-# request - запрос
-# action - что именно нужно сделать с текстом (сократить, ответить, пояснить и тд)
-def get_response(request, action = ''):
-    # model = "gpt-4"
-    # provider = g4f.Provider.You
-    model = "gpt-3.5-turbo"
-    provider = g4f.Provider.FreeChatgpt
+config, language = set_locale()
 
-    response = g4f.ChatCompletion.create(
-        model=model,
-        messages=[{"role": "user", "content": request + ' ' + action}],
-        n=1,
-        stream=True,
-        provider=provider
-    )
-    return response
-
-# request = 'Сгенерируй какой-нибудь текст на 200 слов'
-# print(''.join([message for message in get_response(request)]))
-
-
-# players = Players(6)
-# for player in players.players:
-#     for trait in player.known.keys():
-#         player.known[trait] = True
-# print(players.get_info())
-
-# request = players.players[-1].get_info()
-# action = 'Расскажи чем этот человек был бы полезен в бункере'
-# print(''.join([message for message in get_response(request, action)]))
-
-story = Story(n_players=3)
-
-print(story.story_name)
-print(story.story)
 
 # Выбрать черту для раскрытия
 def choose_trait(player_name):
-    request = story.get_request(story.players.players[player_name], 'choose trait')
+    # выбрать черту
+    request = Text.get_request(story, player_name, 'choose trait')
     response = ''.join(get_response(request))
     print(response)
+
+    # проверка, есть ли черта в списке
     trait_chosen = ''
-    for trait in traits_russian.keys():
-        if traits_russian[trait] in response.lower() or trait in response.lower():
+    for trait in get_traits_keys():
+        if get_traits_text(trait) in response.lower() or trait in response.lower():
             trait_chosen = trait
             break
 
-    print(story.players.players[player_name].get_trait(trait))
-    request = story.get_request(story.players.players[player_name], 'explain trait', trait=story.players.players[player_name].get_trait(trait))
-    response = ''.join(get_response(request))
-    print(response)
-    response = ''.join(get_response(response, action='Выдели основную информацию из текста выше.'))
     if trait_chosen != '':
-        story.players.players[player_name].explanations[trait_chosen] = response
-        story.players.players[player_name].known[trait_chosen] = True
+        print(story.players[player_name].get_trait_info(trait))
+        # объяснить выбранную черту
+        request = Text.get_request(story, player_name, 'explain trait', trait=story.players[player_name].get_trait_info(trait))
+        response = ''.join(get_response(request))
+        print(response)
 
-    print(*[trait for trait in story.players.players[player_name].known.keys() if not(story.players.players[player_name].known[trait])])
+        # сократить объяснение черты
+        response = ''.join(get_response(response, action=config.get(language, "main_info")))
+        story.players[player_name].explanations[trait_chosen] = response
+        story.players[player_name].known[trait_chosen] = True
+
+    print(*[trait for trait in get_traits_keys() if not(story.players[player_name].known[trait])])
 
 
 # Голосование за исключение
 def choose_player(names=[]):
+    # словарь имя : голосов против
     voting = {}
+
+    # из каких имён выбирать
+    # при равном голосовании - заново среди тех, за кого больше голосов, иначе среди всех
     if names == []:
-        names = story.players.players.keys()
-
+        names = story.active_players.keys()
+    # голосование только за тех, кто ещё активный
     for name in names:
-        if story.players.players[name].active:
-            voting.update({name : 0})
+        voting.update({name : 0})
 
-    for player_name in story.players.players.keys():
-        if story.players.players[player_name].active:
-            request = story.get_request(story.players.players[player_name], 'vote')
-            response = ''.join(get_response(request))
-            print(response)
+    # цикл по активным игрокам
+    for player_name in story.active_players.keys():
+        # голосование игрока против кого-то
+        request = Text.get_request(story, player_name, 'vote')
+        response = ''.join(get_response(request))
+        print(response)
 
-            name_chosen = ''
-            for word in response.split(): 
-                if word in voting.keys():
-                    name_chosen = word
-                    break
+        # поиск имени, против кого проголосовал
+        name_chosen = ''
+        for word in response.split(): 
+            if word in voting.keys():
+                name_chosen = word
+                break
+        if name_chosen != '':
+            voting[name_chosen] += 1
 
-            if name_chosen != '':
-                voting[name_chosen] += 1
-
-            
+    # сколько против кого проголосовали
     for name in voting.keys():
         print(name, ':', voting[name])
 
-    max_value = 0
-    for name in voting.keys():
-        if voting[name] > max_value:
-            max_value = voting[name]
-
+    # поиск сколько макс.числа голосов
+    max_value = max(voting.values())   
     count = 0
     player_name = ''
     for name in voting.keys():
@@ -103,22 +77,28 @@ def choose_player(names=[]):
             count += 1
             player_name = name
 
+    # если макс.числа голосов несколько, переголосование только среди тех, у кого макс.число голосов. Иначе игрок с макс.числом голосов выбывает
     if count > 1:
         choose_player([name for name in names if voting[name] == max_value])
     else:
-        story.players.players[player_name].active = False
+        story.players[player_name].active = False
 
 
+
+story = Story(n_players=3)
+
+print(story.story_name)
+print(story.story)
+print(*story.players.keys())
 
 # Круг
 for i in range(story.n_players - story.places):
-    # Выбрать черту для раскрытия
-    for player_name in story.players.players.keys():
-        if story.players.players[player_name].active:
-            print(story.players.players[player_name].get_info_own())
-            for _ in range(3 if i == 0 else 1):
-                choose_trait(player_name)
+    # # Выбор черты для раскрытия
+    for player_name in story.active_players.keys():
+        print(story.players[player_name].get_info(own=True))
+        for _ in range(3 if i == 0 else 1):
+            choose_trait(player_name)
         
-    # Голосование за исключение
+    # # Голосование за исключение
     choose_player()
 

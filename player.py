@@ -1,61 +1,22 @@
 import random
-import json
+from modules import *
 
-traits_russian = {
-    'gender_age' : 'пол и возраст',
-    'name' : 'имя',
-    'body' : 'телосложение',
-    'health' : 'здоровье',
-    'job' : 'профессия',
-    'hobby' : 'хобби',
-    'phobia' : 'фобия',
-    'inventory' : 'инвентарь',
-    'additional' : 'доп.информация'
-}
-
-age_russian = {
-    0 : 'лет',
-    1 : 'год',
-    2 : 'года',
-    3 : 'года',
-    4 : 'года',
-    5 : 'лет',
-    6 : 'лет',
-    7 : 'лет',
-    8 : 'лет',
-    9 : 'лет'
-}
-
-def get_age_name(age, gender):
-    if age < 30: age_names = ['молодой', 'молодая']
-    elif age < 60: age_names = ['взрослый', 'взрослая']
-    else: age_names = ['пожилой', 'пожилая']
-    if gender == "Мужчина":
-        return age_names[0]
-    else:
-        return age_names[1]
-
-def load_data():
-    f = open('traits_russian.json', encoding='UTF-8')
-    data = json.load(f)
-    male_names = data['male_names']
-    female_names = data['female_names']
-    f.close()
-    return data, male_names, female_names
-
-data, male_names, female_names = load_data()
+data = load_data('traits')
+male_names = data['male_names']
+female_names = data['female_names']
 
 class Player():
     # Инициализация нового персонажа
     def __init__(self):
         self.gender = random.choice(data['genders'])                # пол
         self.age = random.randint(14, 90)                           # возраст
-        if self.gender == "Мужчина":                                # имя
+        if self.gender.lower() == "мужчина" or self.gender.lower() == "male":  # имя
             self.name = random.choice(male_names)   
             male_names.remove(self.name)
         else: 
             self.name = random.choice(female_names) 
             female_names.remove(self.name)                                       
+        self.personality = random.choice(data['personalities'])     # телосложение  
         self.body = random.choice(data['bodies'])                   # телосложение             
         self.is_healthy = random.choice([True, False])              # здоровый?
         self.disease = random.choice(data['diseases'])              # заболевание
@@ -68,10 +29,10 @@ class Player():
         self.inventory = random.choice(data['inventories'])         # инвентарь
         self.inventory_count = random.randint(1,20)                 # инвентарь кол-во
         self.additional = random.choice(data['additional'])         # доп.информация
-        self.active = True
-        self.known = {
+        self.active = True      # активный персонаж?
+        self.known = {          # известные хар-ки
             'gender_age' : False,
-            'name' : True,
+            'personality' : False,
             'body' : False,
             'health' : False,
             'job' : False,
@@ -80,9 +41,9 @@ class Player():
             'inventory' : False,
             'additional' : False
         }
-        self.explanations = {
+        self.explanations = {   # объяснения хар-к
             'gender_age' : '',
-            'name' : '',
+            'personality' : '',
             'body' : '',
             'health' : '',
             'job' : '',
@@ -92,23 +53,11 @@ class Player():
             'additional' : ''
         }
         
-    @property
-    def traits(self):
-        return [
-            f'Пол и возраст: {self.trait_gender_age}. {self.explanations['gender_age']}',
-            f'Телосложение: {self.trait_body}. {self.explanations['body']}',
-            f'Здоровье: {self.trait_health}. {self.explanations['health']}',
-            f'Профессия: {self.trait_job}. {self.explanations['job']}',
-            f'Хобби: {self.trait_hobby}. {self.explanations['hobby']}',
-            f'Фобия: {self.trait_phobia}. {self.explanations['phobia']}',
-            f'Инвентарь: {self.trait_inventory}. {self.explanations['inventory']}',
-            f'Доп.информация: {self.trait_additional}. {self.explanations['additional']}'
-        ]
-    
-    def get_trait(self, trait):
+    # Возвращает информацию об указанной характеристике
+    def get_trait_info(self, trait):
         return {
             'gender_age' : self.trait_gender_age,
-            'name' : self.trait_name,
+            'personality' : self.trait_personality,
             'body' : self.trait_body,
             'health' : self.trait_health,
             'job' : self.trait_job,
@@ -117,75 +66,62 @@ class Player():
             'inventory' : self.trait_inventory,
             'additional' : self.trait_additional
         }[trait]
-
+    
+    # Возвращает список характеристик персонажа с его объяснениями характеристики. Можно указать только известные или только неизвестные характеристики.
+    def get_traits_info_list(self, only="all"):
+        lst_traits = []
+        for trait_key in get_traits_keys():
+            if (only=="all") or (self.known[trait_key] and only=="known") or (not(self.known[trait_key]) and only=="unknown"):
+                lst_traits.append(f'{get_traits_text(trait_key).capitalize()} : {self.get_trait_info(trait_key)}. {self.explanations[trait_key]}')
+        return lst_traits
+    
     @property
     def trait_name(self):
-        # if not(self.known['name']): return 'Неизвестно'
         return self.name
     @property
+    def trait_personality(self):
+        return self.personality
+    @property
     def trait_gender_age(self):
-        # if not(self.known['gender_age']): return 'Неизвестно'
-        return f'{self.gender}, {self.age} {age_russian[self.age % 10]} ({get_age_name(self.age, self.gender)})'
+        return f'{self.gender}, {self.age} {get_age_text(self.age)} ({get_age_name(self.age)})'
     @property
     def trait_body(self):
-        # if not(self.known['body']): return 'Неизвестно'
         return f'{self.body}'
     @property
     def trait_health(self):
-        # if not(self.known['health']): return 'Неизвестно'
         if self.is_healthy:
-            return 'Полностью здоров'
+            return config.get(language, "healthy").capitalize()
         else:
-            return f'{self.disease} ({self.disease_stage} степень)'
+            return f'{self.disease} ({self.disease_stage})'
     @property
     def trait_job(self):
-        # if not(self.known['job']): return 'Неизвестно'
         return f'{self.job} ({self.job_experience})'
     @property
     def trait_hobby(self):
-        # if not(self.known['hobby']): return 'Неизвестно'
         return f'{self.hobby} ({self.hobby_experience})'
     @property
     def trait_phobia(self):
-        # if not(self.known['phobia']): return 'Неизвестно'
         return self.phobia
     @property
     def trait_inventory(self):
-        # if not(self.known['inventory']): return 'Неизвестно'
         return f'{self.inventory}'
     @property
     def trait_additional(self):
-        # if not(self.known['additional']): return 'Неизвестно'
         return self.additional
 
     # Получить краткие сведения о персонаже
-    def get_info(self):
-        known_traits = [
-            f'{f'Пол и возраст: {self.trait_gender_age}. {self.explanations['gender_age']}' if self.known['gender_age'] else ''}',
-            f'{f'Телосложение: {self.trait_body}. {self.explanations['body']}' if self.known['body'] else ''}',
-            f'{f'Здоровье: {self.trait_health}. {self.explanations['health']}' if self.known['health'] else ''}',
-            f'{f'Профессия: {self.trait_job}. {self.explanations['job']}' if self.known['job'] else ''}',
-            f'{f'Хобби: {self.trait_hobby}. {self.explanations['hobby']}' if self.known['hobby'] else ''}',
-            f'{f'Фобия: {self.trait_phobia}. {self.explanations['phobia']}' if self.known['phobia'] else ''}',
-            f'{f'Инвентарь: {self.trait_inventory}. {self.explanations['inventory']}' if self.known['inventory'] else ''}',
-            f'{f'Доп.информация: {self.trait_additional}. {self.explanations['additional']}' if self.known['additional'] else ''}'
-        ]
-        known_traits = [trait for trait in known_traits if trait != '']
-        unknown_traits = [traits_russian[trait] for trait in self.known.keys() if not(self.known[trait])]
-        return f'{f'Известные сведения о {self.name}:\n{'\n'.join(known_traits)}' if len(known_traits) > 0 else ''}\n{f'Неизвестные сведения о {self.name}:\n{','.join(unknown_traits)}' if len(unknown_traits) > 0 else ''}'
-    
-    def get_info_own(self):
-        known_traits = [traits_russian[trait] for trait in self.known.keys() if self.known[trait]]
-        unknown_traits = [traits_russian[trait] for trait in self.known.keys() if not(self.known[trait])]
-        return f'{f'Сведения о тебе:\n{'\n'.join([f'{i+1}. {self.traits[i]}' for i in range(len(self.traits))])}'}\n{f'Остальные знают о тебе:\n{','.join(known_traits)}' if len(known_traits) > 0 else ''}\n{f'Неизвестные остальным сведения о тебе:\n{','.join(unknown_traits)}' if len(unknown_traits) > 0 else ''}'
-    
-
-class Players():
-    def __init__(self, n):
-        self.players = {}
-        for i in range(n):
-            new_player = Player()
-            self.players.update({new_player.name : new_player})
-
-    def get_info(self, player_name='', active=False):
-        return '\n\n'.join([player.get_info() for player in self.players.values() if player.name != player_name and (player.active or active==False)])
+    def get_info(self, own=False):
+        known_traits = self.get_traits_info_list(only="known")
+        unknown_traits = [get_traits_text(trait) for trait in get_traits_keys() if not(self.known[trait])]
+        info = ''
+        if own:
+            info += f'{config.get(language, "info_about_own").capitalize()}\n'
+            info += f'{'\n'.join(self.get_traits_info_list())}\n'
+        else:
+            if len(known_traits) > 0:
+                info += f'{config.get(language, "known_info_about").capitalize()} {self.name}\n'
+                info += f'{'\n'.join(known_traits)}\n' 
+            if len(unknown_traits) > 0:
+                info += f'{config.get(language, "unknown_info_about").capitalize()} {self.name}\n'
+                info += f'{','.join(unknown_traits)}\n'
+        return info
