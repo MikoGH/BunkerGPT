@@ -3,11 +3,11 @@
         "Carlo", 
         "Bob", 
         "Aaron", 
-        "Mett", 
+        "Matt", 
         "Demian", 
         "Leonardo", 
         "Chad", 
-        "Zhak", 
+        "Zack", 
         "Eric", 
         "Dominico"
     ],
@@ -16,7 +16,7 @@
         "Zhanna", 
         "Nia", 
         "Diana", 
-        "Denny", 
+        "Deny", 
         "Lucia", 
         "Airis", 
         "Monika", 
@@ -24,6 +24,30 @@
         "Amy", 
         "Edis"
     ],
+    "avatars" :
+    {
+        "Carlo" : "Carlo.jpg", 
+        "Bob" : "Bob.jpg", 
+        "Aaron" : "Aaron.jpg", 
+        "Matt" : "Matt.jpg", 
+        "Demian" : "Demian.jpg", 
+        "Leonardo" : "Leonardo.jpg", 
+        "Chad" : "Chad.jpg", 
+        "Zack" : "Zack.jpg", 
+        "Eric" : "Eric.jpg", 
+        "Dominico" : "Dominico.jpg",
+        "Kiara" : "Kiara.jpg", 
+        "Zhanna" : "Zhanna.jpg", 
+        "Nia" : "Nia.jpg", 
+        "Diana" : "Diana.jpg", 
+        "Deny" : "Deny.jpg", 
+        "Lucia" : "Lucia.jpg", 
+        "Airis" : "Airis.jpg", 
+        "Monica" : "Monica.jpg", 
+        "Norma" : "Norma.jpg", 
+        "Amy" : "Amy.jpg", 
+        "Edis" : "Edis.jpg"
+    },
     "genders" : [
         "Male", 
         "Female"

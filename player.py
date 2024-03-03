@@ -15,7 +15,8 @@ class Player():
             male_names.remove(self.name)
         else: 
             self.name = random.choice(female_names) 
-            female_names.remove(self.name)                                       
+            female_names.remove(self.name)           
+        self.avatar = data['avatars'][self.name] if self.name in data['avatars'].keys() else "None.jpg"  # аватар                       
         self.personality = random.choice(data['personalities'])     # телосложение  
         self.body = random.choice(data['bodies'])                   # телосложение             
         self.is_healthy = random.choice([True, False])              # здоровый?
@@ -68,11 +69,11 @@ class Player():
         }[trait]
     
     # Возвращает список характеристик персонажа с его объяснениями характеристики. Можно указать только известные или только неизвестные характеристики.
-    def get_traits_info_list(self, only="all"):
+    def get_traits_info_list(self, only="all", explanation=True):
         lst_traits = []
         for trait_key in get_traits_keys():
             if (only=="all") or (self.known[trait_key] and only=="known") or (not(self.known[trait_key]) and only=="unknown"):
-                lst_traits.append(f'{get_traits_text(trait_key).capitalize()} : {self.get_trait_info(trait_key)}. {self.explanations[trait_key]}')
+                lst_traits.append(f'{get_traits_text(trait_key).capitalize()} : {self.get_trait_info(trait_key)}. {self.explanations[trait_key] if explanation else ''}')
         return lst_traits
     
     @property
