@@ -12,10 +12,10 @@ from design.ui import Ui_MainWindowActions
 app = QApplication(sys.argv)
 
 mainWindow = QtWidgets.QMainWindow()
-ui = Ui_MainWindowActions(mainWindow)
+ui = Ui_MainWindowActions(mainWindow, app)
 mainWindow.show()
 
-app.exec()
+sys.exit(app.exec_())
 
 # # Круг
 # for i in range(story.n_players - story.places):

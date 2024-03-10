@@ -23,6 +23,8 @@ class Label(QWidget):
         self.lbl = QLabel()
         self.lbl.setText(text)
         self.lbl.setFont(QFont(fontName, 20, weight=QFont.Bold))
+        # self.lbl.setMaximumWidth(self.width())
+        self.lbl.setWordWrap(True)
         self.layout.addWidget(self.lbl, alignment=Qt.AlignCenter)
         
         self.setLayout(self.layout)
