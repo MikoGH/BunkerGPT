@@ -8,7 +8,7 @@ config, language = set_locale()
 
 
 class Label(QWidget):
-    def __init__(self):
+    def __init__(self, text):
         super().__init__()
 
         self.layout = QVBoxLayout()
@@ -21,7 +21,7 @@ class Label(QWidget):
         
         # Текст
         self.lbl = QLabel()
-        self.lbl.setText(config.get(language, "chat").capitalize())
+        self.lbl.setText(text)
         self.lbl.setFont(QFont(fontName, 20, weight=QFont.Bold))
         self.layout.addWidget(self.lbl, alignment=Qt.AlignCenter)
         

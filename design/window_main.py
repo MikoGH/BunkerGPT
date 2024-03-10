@@ -1,18 +1,38 @@
 import sys
+from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
+from modules import *
 from design.widget_card import Card
 from design.widget_label import Label
 from design.widget_chat import Chat
-from story import Story
 
+
+config, language = set_locale()
 
 class MainWindow(QMainWindow):
-    def __init__(self, story):
-        super().__init__()
+    def setupUi(self, mainWindow, story):
+        # super().__init__()
+        mainWindow.setObjectName("MainWindow")
+        mainWindow.setWindowModality(QtCore.Qt.NonModal)
+        mainWindow.setEnabled(True)
+        mainWindow.resize(983, 614)
+        mainWindow.setMouseTracking(False)
+        mainWindow.setTabletTracking(False)
+        mainWindow.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
+        mainWindow.setAcceptDrops(False)
+        mainWindow.setAutoFillBackground(False)
+        mainWindow.setAnimated(True)
+        mainWindow.setDocumentMode(False)
+        mainWindow.setTabShape(QtWidgets.QTabWidget.Rounded)
+        mainWindow.setDockNestingEnabled(False)
+        mainWindow.setDockOptions(QtWidgets.QMainWindow.AllowTabbedDocks|QtWidgets.QMainWindow.AnimatedDocks)
+        mainWindow.setUnifiedTitleAndToolBarOnMac(False)
+        # self.centralwidget = QtWidgets.QWidget(mainWindow)
 
-        # self.grid = QGridLayout() 
+        self.story = story
+
         spacing = 100
         spacing_v = 40
         margin_v = 30 
@@ -44,7 +64,7 @@ class MainWindow(QMainWindow):
         
         # Название катаклизма
         self.lbl_cataclysm = QLabel()
-        self.lbl_cataclysm.setText(story.story_name)
+        self.lbl_cataclysm.setText(self.story.story_name)
         self.lbl_cataclysm.setFont(QFont(fontName, 24, weight=QFont.Bold))
         self.lbl_cataclysm.setStyleSheet("color: white") 
 
@@ -53,8 +73,8 @@ class MainWindow(QMainWindow):
         self.grid_cards.setVerticalSpacing(spacing // 2)
         self.grid_cards.setHorizontalSpacing(spacing)
         self.cards = []
-        for i, player_name in enumerate(story.players.keys()):
-            self.cards.append(Card(story.players[player_name]))
+        for i, player_name in enumerate(self.story.players.keys()):
+            self.cards.append(Card(self.story.players[player_name]))
             self.grid_cards.addWidget(self.cards[i], i//3, i%3)
 
         # Чат
@@ -63,11 +83,13 @@ class MainWindow(QMainWindow):
         # Расположение
         self.layout_v_left.addWidget(self.lbl_cataclysm, stretch_top, alignment=Qt.AlignCenter)
         self.layout_v_left.addLayout(self.grid_cards, stretch_bottom)
-        self.layout_v_right.addWidget(Label(), stretch_top)
+        self.layout_v_right.addWidget(Label(config.get(language, "chat").capitalize()), stretch_top)
         self.layout_v_right.addWidget(self.chat, stretch_bottom)
         widget = QWidget()
+        # widget = QWidget(mainWindow)
         widget.setLayout(self.layout_h)
         self.setCentralWidget(widget)
+        mainWindow.setCentralWidget(self)
  
     def paintEvent(self,e):
         background = self.background.scaled(self.size())

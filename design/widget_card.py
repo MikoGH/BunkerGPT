@@ -31,6 +31,8 @@ class Card(QWidget):
         # Шрифты
         fontId = QFontDatabase.addApplicationFont("./data/fonts/Finlandica-Bold.ttf")
         fontName = QFontDatabase.applicationFontFamilies(fontId)[0]
+        fontId = QFontDatabase.addApplicationFont("./data/fonts/Finlandica-Regular.ttf")
+        fontName_regular = QFontDatabase.applicationFontFamilies(fontId)[0]
         
         # Аватар
         imgpath = f"./data/avatars/{player.avatar}"
@@ -57,7 +59,7 @@ class Card(QWidget):
             else:
                 text = player.get_trait_info(trait)
             lbl_trait.setText(f"<b>{get_traits_text(trait).capitalize()}:</b> {text}")
-            lbl_trait.setFont(QFont(fontName, 9))
+            lbl_trait.setFont(QFont(fontName_regular, 9))
             lbl_trait.setMaximumWidth(self.width())
             lbl_trait.setWordWrap(True)
             layout_trait.addWidget(lbl_trait)  ##
