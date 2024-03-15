@@ -55,12 +55,14 @@
     "personalities" : [
         "Kind",
         "Rude",
-        "Bloodlust",
-        "Wimp",
-        "Brawler",
-        "Teetotaler",
-        "Jealous",
-        "Violant"
+        "Violant",
+        "Religious",
+        "Stutter",
+        "Careful",
+        "Silly",
+        "Shy",
+        "Wierdo",
+        "Selfish"
     ],
     "bodies" : [
         "Frail", 

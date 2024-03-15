@@ -17,7 +17,7 @@ class Text():
     # Получить запрос
     def get_request(story, player_name, action, trait=''):
         if action == 'vote':
-            return f'{Text.get_static_info(story)}\n{Text.get_players_info(story, player_name)}\n{Text.get_person_info(story, player_name)}\n{config.get(language, "vote")}'
+            return f'{Text.get_static_info(story)}\n{Text.get_players_info(story, player_name)}\n{Text.get_person_info(story, player_name)}\n{config.get(language, "vote")}. {config.get(language, "character")} {story.players[player_name].personality}.'
         if action == 'explain trait':
             return f'{Text.get_static_info(story)}\n{trait} - {config.get(language, "explain_trait")} {player_name}. {config.get(language, "character")} {story.players[player_name].personality}.'
         if action == 'choose trait':

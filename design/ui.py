@@ -49,7 +49,7 @@ class Worker(QObject):
                 # сколько против кого проголосовали
                 text_results = ''
                 for name in voting.keys():
-                    text_results += f'{name} : {voting[name]}'
+                    text_results += f'{name} : {voting[name]}\n'
                 self.signal_vote_results.emit(text_results)
 
                 # поиск сколько макс.числа голосов
