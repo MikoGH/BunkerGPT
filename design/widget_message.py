@@ -4,10 +4,11 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from modules import *
 from design.widget_card import Card
+import re
 
 
 class Message(QWidget):
-    def __init__(self, player, message):
+    def __init__(self, player, message, template=''):
         super().__init__()
 
         self.layout = QVBoxLayout()
@@ -39,8 +40,16 @@ class Message(QWidget):
         self.lbl_name.setFont(QFont(fontName, 16, weight=QFont.Bold))
         
         # Текст
+        template_words = [word.lower() for word in template.split()]
+        message_words = list(message.split())
+        for i, word in enumerate(message_words):
+            if word.replace(r'\W', '').lower() in template_words:
+                message_words[i] = word.replace(word.replace(r'\W', ''), f'<b>{word.replace(r'\W', '')}</b>')
+                print(message_words[i])
+
+
         self.lbl = QLabel()
-        self.lbl.setText(message)
+        self.lbl.setText(' '.join(message_words))
         self.lbl.setFont(QFont(fontName, 12))
         self.lbl.setMaximumWidth(self.width())
         self.lbl.setWordWrap(True)

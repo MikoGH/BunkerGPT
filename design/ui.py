@@ -11,9 +11,9 @@ from design.widget_message import Message
 
 class Worker(QObject):
     signal_trait = pyqtSignal(str, str)  # player_name, trait
-    signal_trait_explanation = pyqtSignal(str, str)  # player_name, trait explanation
+    signal_trait_explanation = pyqtSignal(str, str, str)  # player_name, trait explanation, trait
     signal_vote = pyqtSignal(str, str)  # player_name, player chosen
-    signal_vote_explanation = pyqtSignal(str, str)  # player_name, player chosen
+    signal_vote_explanation = pyqtSignal(str, str, str)  # player_name, player chosen, vote
     signal_vote_results = pyqtSignal(str)  # vote results
     
     def __init__(self, story):
@@ -30,7 +30,7 @@ class Worker(QObject):
                     trait, message = choose_trait(self.story, player_name)
                     if trait != '':
                         self.signal_trait.emit(player_name, trait)
-                        self.signal_trait_explanation.emit(player_name, message)
+                        self.signal_trait_explanation.emit(player_name, message, self.story.players[player_name].get_trait_info(trait))
             # Голосование за исключение
             while True:
                 # словарь имя : голосов против
@@ -47,7 +47,7 @@ class Worker(QObject):
                         vote, message, voting = choose_player(self.story, player_name)
                         if vote != '':
                             self.signal_vote.emit(player_name, vote)
-                            self.signal_vote_explanation.emit(player_name, message)
+                            self.signal_vote_explanation.emit(player_name, message, vote)
                         
                 # сколько против кого проголосовали
                 text_results = ''
@@ -111,15 +111,15 @@ class Ui_MainWindowActions(MainWindow, QObject):
         # print(self.story.players[player_name].known)
         pass
 
-    def signal_trait_explanation(self, player_name, message):
-        widget_message = Message(self.story.players[player_name], message)
+    def signal_trait_explanation(self, player_name, message, trait):
+        widget_message = Message(self.story.players[player_name], message, trait)
         self.ui.chat.scrollLayout.addWidget(widget_message, alignment=Qt.AlignTop)
         
     def signal_vote(self, player_name, vote):
         pass
         
-    def signal_vote_explanation(self, player_name, message):
-        widget_message = Message(self.story.players[player_name], message)
+    def signal_vote_explanation(self, player_name, message, vote):
+        widget_message = Message(self.story.players[player_name], message, vote)
         self.ui.chat.scrollLayout.addWidget(widget_message, alignment=Qt.AlignTop)
         
     def signal_vote_results(self, message):

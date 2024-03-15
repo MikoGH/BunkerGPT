@@ -3,6 +3,7 @@ from player import Player, get_traits_text, get_traits_keys
 from story import Story
 from texts import Text
 from design.widget_message import Message
+import re
 
 config, language = set_locale()
 
@@ -13,12 +14,14 @@ def choose_trait(story, player_name):
         # выбрать черту
         request = Text.get_request(story, player_name, 'choose trait')
         response = ''.join(get_response(request))
+        print(response)
 
         # проверка, есть ли черта в списке
         for trait in get_traits_keys():
-            if get_traits_text(trait) in response.lower() or trait in response.lower():
-                trait_chosen = trait
-                break
+            for word in response.lower().split():
+                if word.replace(r'\W', '') in get_traits_text(trait).lower() or trait in response.lower() or word.replace(r'\W', '') in story.players[player_name].get_trait_info(trait).lower():
+                    trait_chosen = trait
+                    break
 
     # объяснить выбранную черту
     request = Text.get_request(story, player_name, 'explain trait', trait=story.players[player_name].get_trait_info(trait))
