@@ -19,7 +19,7 @@ class Text():
         if action == 'vote':
             return f'{Text.get_static_info(story)}\n{Text.get_players_info(story, player_name)}\n{Text.get_person_info(story, player_name)}\n{config.get(language, "vote")}'
         if action == 'explain trait':
-            return f'{Text.get_static_info(story)}\n{trait} - {config.get(language, "explain_trait")} {player_name}'
+            return f'{Text.get_static_info(story)}\n{trait} - {config.get(language, "explain_trait")} {player_name}. {config.get(language, "character")} {story.players[player_name].personality}.'
         if action == 'choose trait':
             return f'{Text.get_static_info(story)}\n{config.get(language, "choose_trait")}\n{'\n'.join(story.players[player_name].get_traits_info_list(only="unknown"))}'
         

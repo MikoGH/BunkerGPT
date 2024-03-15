@@ -10,6 +10,7 @@ from modules import *
 class Card(QWidget):
     def __init__(self, player : Player):
         super().__init__()
+        self.player = player
 
         margin_h_text = 10
         margin_v_text = 5
@@ -52,25 +53,27 @@ class Card(QWidget):
         # Характеристики
         self.dct_lbl_traits = {}
         for trait in get_traits_keys():
-            layout_trait = QHBoxLayout()
+            # layout_trait = QHBoxLayout()
             lbl_trait = QLabel()
-            if trait == 'phobia':
-                text = player.get_trait_info(trait).split('—')[0]
-            else:
-                text = player.get_trait_info(trait)
-            lbl_trait.setText(f"<b>{get_traits_text(trait).capitalize()}:</b> {text}")
+            # if trait == 'phobia':
+            #     text = player.get_trait_info(trait).split('—')[0]
+            # else:
+            #     text = player.get_trait_info(trait)
+            # lbl_trait.setText(f"<b>{get_traits_text(trait).capitalize()}:</b> {player.get_trait_info(trait)}")
+            lbl_trait.setText(f"<b>{get_traits_text(trait).capitalize()}:</b> ")
             lbl_trait.setFont(QFont(fontName_regular, 9))
             lbl_trait.setMaximumWidth(self.width())
             lbl_trait.setWordWrap(True)
-            layout_trait.addWidget(lbl_trait)  ##
-            self.dct_lbl_traits.update({trait : layout_trait})
+            # layout_trait.addWidget(lbl_trait)  ##
+            # layout_trait.widget
+            self.dct_lbl_traits.update({trait : lbl_trait})
 
         # Расположение
         self.layout_name.addWidget(self.lbl_image, 1)
         self.layout_name.addWidget(self.lbl_name, 2)
         self.layout_traits.setSpacing(2)
         for trait in get_traits_keys():
-            self.layout_traits.addLayout(self.dct_lbl_traits[trait])
+            self.layout_traits.addWidget(self.dct_lbl_traits[trait])
         #     if trait == 'hobby':
         #         print('hobby')
         #         self.layout_traits.addLayout(self.dct_lbl_traits[trait], 2)
@@ -80,12 +83,16 @@ class Card(QWidget):
         self.setLayout(self.layout)
         self.show()
 
-    def paintEvent(self, ev):
+    def paintEvent(self, ev=None):
         painter = QPainter(self)
         painter.begin(self)
-        painter.setBrush(QColor.fromRgb(242, 213, 187))
+        if self.player.active:
+            painter.setBrush(QColor.fromRgb(242, 213, 187))
+        else:
+            painter.setBrush(QColor.fromRgb(170, 150, 150))
         painter.drawRoundedRect(self.rect(), 20.0, 20.0)
         painter.end()
+
 
     def mask_image(imgdata, imgtype = 'jpg', size = 64): 
         image = QImage.fromData(imgdata, imgtype) 

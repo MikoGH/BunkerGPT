@@ -1,6 +1,9 @@
 from configparser import ConfigParser
 import g4f
 import json
+from nltk.corpus import stopwords
+
+stop_words = stopwords.words("english")
 
 
 # устанавливает язык из файла locale.ini

@@ -10,6 +10,7 @@ config, language = set_locale()
 # Выбрать черту для раскрытия
 def choose_trait(story, player_name):
     trait_chosen = ''
+    if not(story.players[player_name].known['job']): trait_chosen = 'job'
     while trait_chosen == '':
         # выбрать черту
         request = Text.get_request(story, player_name, 'choose trait')
@@ -19,12 +20,12 @@ def choose_trait(story, player_name):
         # проверка, есть ли черта в списке
         for trait in get_traits_keys():
             for word in response.lower().split():
-                if word.replace(r'\W', '') in get_traits_text(trait).lower() or trait in response.lower() or word.replace(r'\W', '') in story.players[player_name].get_trait_info(trait).lower():
+                if word.replace(r'\W', '') in get_traits_text(trait).lower() or get_traits_text(trait).lower() in response.lower() or word.replace(r'\W', '') in story.players[player_name].get_trait_info(trait).lower():
                     trait_chosen = trait
                     break
 
     # объяснить выбранную черту
-    request = Text.get_request(story, player_name, 'explain trait', trait=story.players[player_name].get_trait_info(trait))
+    request = Text.get_request(story, player_name, 'explain trait', trait=story.players[player_name].get_trait_info(trait_chosen))
     response = ''.join(get_response(request))
     message = response
 
@@ -37,16 +38,18 @@ def choose_trait(story, player_name):
 
 # Голосование за исключение
 def choose_player(story, player_name, voting):
-    # голосование игрока против кого-то
-    request = Text.get_request(story, player_name, 'vote')
-    response = ''.join(get_response(request))
-
-    # поиск имени, против кого проголосовал
     name_chosen = ''
-    for word in response.split(): 
-        if word in voting.keys():
-            name_chosen = word
-            break
-    if name_chosen != '':
-        voting[name_chosen] += 1
+    while name_chosen == '':
+        # голосование игрока против кого-то
+        request = Text.get_request(story, player_name, 'vote')
+        response = ''.join(get_response(request))
+        print(response)
+
+        # поиск имени, против кого проголосовал
+        for word in response.split(): 
+            sub_word = re.sub(r'\W', '', word)
+            if sub_word in voting.keys():
+                name_chosen = sub_word
+                break
+    voting[name_chosen] += 1
     return name_chosen, response, voting

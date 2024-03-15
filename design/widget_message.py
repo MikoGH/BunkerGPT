@@ -36,16 +36,16 @@ class Message(QWidget):
         if player != None:
             self.lbl_name.setText(player.name)
         else:
-            self.lbl_name.setText('#')
+            self.lbl_name.setText(config.get(language, "system").capitalize())
         self.lbl_name.setFont(QFont(fontName, 16, weight=QFont.Bold))
         
         # Текст
-        template_words = [word.lower() for word in template.split()]
+        template_words = [re.sub(r'\W', '', word).lower() for word in template.split()]
         message_words = list(message.split())
         for i, word in enumerate(message_words):
-            if word.replace(r'\W', '').lower() in template_words:
-                message_words[i] = word.replace(word.replace(r'\W', ''), f'<b>{word.replace(r'\W', '')}</b>')
-                print(message_words[i])
+            sub_word = re.sub(r'\W', '', word)
+            if sub_word.lower() in template_words and not(sub_word in stop_words):
+                message_words[i] = word.replace(sub_word, f'<b>{sub_word}</b>')
 
 
         self.lbl = QLabel()

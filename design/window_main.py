@@ -58,9 +58,6 @@ class MainWindow(QMainWindow):
 
         # Бэкграунд
         self.background = QPixmap("./data/images/background.jpg")
-
-        # Заголовок окна
-        self.setWindowTitle("BunkerGPT")
         
         # Название катаклизма
         self.lbl_cataclysm = QLabel()
@@ -72,10 +69,10 @@ class MainWindow(QMainWindow):
         self.grid_cards = QGridLayout() 
         self.grid_cards.setVerticalSpacing(spacing // 2)
         self.grid_cards.setHorizontalSpacing(spacing)
-        self.cards = []
+        self.cards = {}
         for i, player_name in enumerate(self.story.players.keys()):
-            self.cards.append(Card(self.story.players[player_name]))
-            self.grid_cards.addWidget(self.cards[i], i//3, i%3)
+            self.cards.update({player_name : Card(self.story.players[player_name])})
+            self.grid_cards.addWidget(self.cards[player_name], i//3, i%3)
 
         # Чат
         self.chat = Chat()
