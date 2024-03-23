@@ -17,6 +17,7 @@ class Worker(QObject):
     signal_vote_explanation = pyqtSignal(str, str, str)  # player_name, player chosen, vote
     signal_vote_results = pyqtSignal(str)  # vote results
     signal_vote_expell = pyqtSignal(str)  # vote expell
+    signal_show = pyqtSignal()  # show all traits
     
     def __init__(self, story):
         super().__init__()
@@ -68,6 +69,8 @@ class Worker(QObject):
 
             self.story.players[player_name].active = False
             self.signal_vote_expell.emit(player_name)
+        # Показать черты
+        self.signal_end.emit()
         
 
 ''' Класс обработчик событий '''
@@ -100,6 +103,7 @@ class Ui_MainWindowActions(MainWindow, QObject):
         self.worker.signal_vote_explanation.connect(self.signal_vote_explanation)
         self.worker.signal_vote_results.connect(self.signal_vote_results)
         self.worker.signal_vote_expell.connect(self.signal_vote_expell)
+        self.worker.signal_end.connect(self.signal_end)
         # start
         self.worker.moveToThread(self.thread)
         self.thread.started.connect(self.worker.run)
@@ -129,3 +133,9 @@ class Ui_MainWindowActions(MainWindow, QObject):
         for trait in get_traits_keys():
             self.ui.cards[player_name].dct_lbl_traits[trait].setText(f"<b>{get_traits_text(trait).capitalize()}:</b> {self.story.players[player_name].get_trait_info(trait)}")
         self.ui.cards[player_name].update()
+
+    def signal_end(self):
+        for player_name in self.story.active_players.keys():
+            for trait in get_traits_keys():
+                self.ui.cards[player_name].dct_lbl_traits[trait].setText(f"<b>{get_traits_text(trait).capitalize()}:</b> {self.story.players[player_name].get_trait_info(trait)}")
+            self.ui.cards[player_name].update()
