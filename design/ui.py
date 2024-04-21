@@ -17,7 +17,7 @@ class Worker(QObject):
     signal_vote_explanation = pyqtSignal(str, str, str)  # player_name, player chosen, vote
     signal_vote_results = pyqtSignal(str)  # vote results
     signal_vote_expell = pyqtSignal(str)  # vote expell
-    signal_show = pyqtSignal()  # show all traits
+    signal_end = pyqtSignal()  # show all traits
     
     def __init__(self, story):
         super().__init__()
