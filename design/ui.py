@@ -29,10 +29,10 @@ class Worker(QObject):
         for i in range(self.story.n_players - self.story.places):
             # Выбор черты для раскрытия
             for player_name in self.story.active_players.keys():
-                # for _ in range(3 if i == 0 else 1):
-                trait, message = choose_trait(self.story, player_name)
-                self.signal_trait.emit(player_name, trait)
-                self.signal_trait_explanation.emit(player_name, message, self.story.players[player_name].get_trait_info(trait))
+                for _ in range(3 if i == 0 else 1):
+                    trait, message = choose_trait(self.story, player_name)
+                    self.signal_trait.emit(player_name, trait)
+                    self.signal_trait_explanation.emit(player_name, message, self.story.players[player_name].get_trait_info(trait))
             # Голосование за исключение
             names = self.story.active_players.keys()
             while True:

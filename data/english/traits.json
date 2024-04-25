@@ -66,7 +66,9 @@
     ],
     "bodies" : [
         "Frail", 
-        "Strong", 
+        "Thin",
+        "Normal",
+        "Athletic",
         "Plump", 
         "Fat"
     ],
@@ -129,30 +131,80 @@
         "Watching films",
         "Collecting lids",
         "Playing computer games",
-        "Playing table games"
+        "Playing table games",
+        "Watching anime",
+        "Sleeping",
+        "Dreaming"
     ],
     "experience" : [
         "Beginner", 
+        "Amateur",
         "Professional", 
+        "Expert",
         "Master"
     ],
     "phobias" : [
-        "Zoophobia"
+        "Zoophobia - fear of animals",
+        "Nomophobia - fear of being without mobile phone",
+        "Hydrophobia - fear of water",
+        "Hemophobia - fear of blood",
+        "Claustrophobia - fear of confined spaces",
+        "Achluophobia - fear of darkness",
+        "Algophobia - fear of pain",
+        "Atelophobia - fear of imperfection",
+        "Autophobia - fear of being alone",
+        "Dystychiphobia - fear of accidents",
+        "Phobophobia - fear of phobias",
+        "Podophobia - fear of feet",
+        "Somniphobia - fear of sleep",
+        "Xenophobia - fear of strangers or foreigners",
+        "Barophobia - fear of gravity",
+        "Arithmophobia - fear of numbers",
+        "Coulrophobia - fear of clowns",
+        "Cibophobia - fear of food",
+        "Daemonophobia - fear of demons",
+        "Decidophobia - fear of making decisions",
+        "Dendrophobia - fear of trees"
     ],
     "inventories" : [
         "Medical bandages", 
         "Cucumber", 
         "Cactus", 
-        "Telephone", 
+        "Phone", 
         "Stick",
-        "Raw meat, 4 kg"
+        "Raw meat, 4 kg",
+        "Hat",
+        "Folding knife",
+        "Bottle of water",
+        "Plushy",
+        "Peanut butter",
+        "Good-luck charm",
+        "Cake",
+        "Science kit for kids",
+        "Ribbon",
+        "Notebook",
+        "Cat kibble",
+        "Coloured chalks",
+        "Pillow",
+        "80's chanson records"
     ],
     "additional" : [
         "Foreigner",
         "Worked in prison",
         "Has youtube channel",
-        "Watched all series",
+        "Watched a lot of series",
         "Saw UFO",
-        "Knows three languages"
+        "Knows three languages",
+        "Perfectionist",
+        "Believes in ghosts",
+        "Had all A grades in school",
+        "Participated olympic games",
+        "Furry fan",
+        "Pretends to be a superhero",
+        "Used to play ghe guitar",
+        "Used to play ghe piano",
+        "Knows klingon language",
+        "Played a lot of strategy games",
+        "Wrote fanfics"
     ]
 }
