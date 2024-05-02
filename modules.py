@@ -1,6 +1,7 @@
 from configparser import ConfigParser
 import g4f
 import json
+import time
 from nltk.corpus import stopwords
 
 stop_words = stopwords.words("english")
@@ -25,6 +26,7 @@ def get_response(request, action = ''):
     # provider = g4f.Provider.You
     # model = "gpt-3.5-turbo"
     # provider = g4f.Provider.FreeChatgpt
+    time.sleep(2)
     model = "gpt-3.5-turbo"
     provider = g4f.Provider.Liaobots
 

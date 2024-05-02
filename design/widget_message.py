@@ -44,7 +44,7 @@ class Message(QWidget):
         message_words = list(message.split())
         for i, word in enumerate(message_words):
             sub_word = re.sub(r'\W', '', word)
-            if sub_word.lower() in template_words and not(sub_word in stop_words):
+            if sub_word.lower() in template_words and not(sub_word.lower() in stop_words):
                 message_words[i] = word.replace(sub_word, f'<b>{sub_word}</b>')
 
 

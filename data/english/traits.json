@@ -19,7 +19,7 @@
         "Deny", 
         "Lucia", 
         "Airis", 
-        "Monika", 
+        "Monica", 
         "Norma", 
         "Amy", 
         "Edis"
@@ -55,14 +55,22 @@
     "personalities" : [
         "Kind",
         "Rude",
-        "Violant",
+        "Angry",
         "Religious",
         "Stutter",
-        "Careful",
         "Silly",
         "Shy",
         "Wierdo",
-        "Selfish"
+        "Apathetic",
+        "Melancholic",
+        "Cheerful",
+        "Anxious",
+        "Affectionate",
+        "Nerdy",
+        "Romantic",
+        "Vibrant",
+        "Smarmy",
+        "Ridiculous"
     ],
     "bodies" : [
         "Frail", 
@@ -103,7 +111,7 @@
     "jobs" : [
         "Deputy", 
         "CEO",
-        "Software engeneer", 
+        "Software engineer", 
         "Game developer", 
         "Full stack developer",
         "Translator", 
@@ -115,7 +123,7 @@
         "Copywriter",
         "Magician",
         "Storyteller",
-        "Fortunateller",
+        "Fortuneteller",
         "Influencer",
         "Kindergarten teacher",
         "Tractor driver"
@@ -186,7 +194,8 @@
         "Cat kibble",
         "Coloured chalks",
         "Pillow",
-        "80's chanson records"
+        "80's chanson records",
+        "Raccoon mask"
     ],
     "additional" : [
         "Foreigner",
@@ -201,8 +210,8 @@
         "Participated olympic games",
         "Furry fan",
         "Pretends to be a superhero",
-        "Used to play ghe guitar",
-        "Used to play ghe piano",
+        "Used to play the guitar",
+        "Used to play the piano",
         "Knows klingon language",
         "Played a lot of strategy games",
         "Wrote fanfics"
