@@ -8,12 +8,14 @@ import re
 
 
 class Message(QWidget):
-    def __init__(self, player, message, template=''):
+    def __init__(self, player, message, action=None, template=''):
         super().__init__()
 
         self.layout = QVBoxLayout()
         self.layout_name = QHBoxLayout()
+        self.layout_name_text = QVBoxLayout()
         self.layout.setContentsMargins(0, 10, 0, 10)
+        self.layout_name_text.setSpacing(5)
 
         # Шрифты
         fontId = QFontDatabase.addApplicationFont("./data/fonts/Finlandica-Bold.ttf")
@@ -38,6 +40,14 @@ class Message(QWidget):
         else:
             self.lbl_name.setText(config.get(language, "system").capitalize())
         self.lbl_name.setFont(QFont(fontName, 16, weight=QFont.Bold))
+
+        # Действие
+        self.lbl_action = QLabel()
+        if action != None:
+            self.lbl_action.setText(action)
+        else:
+            self.lbl_action.setText("")
+        self.lbl_action.setFont(QFont(fontName, 12))
         
         # Текст
         template_words = [re.sub(r'\W', '', word).lower() for word in template.split()]
@@ -55,8 +65,10 @@ class Message(QWidget):
         self.lbl.setWordWrap(True)
 
         # Расположение
+        self.layout_name_text.addWidget(self.lbl_name, 2)
+        self.layout_name_text.addWidget(self.lbl_action, 1)
         self.layout_name.addWidget(self.lbl_image, 1)
-        self.layout_name.addWidget(self.lbl_name, 9)
+        self.layout_name.addLayout(self.layout_name_text, 9)
         self.layout_name.setSpacing(20)
         self.layout.addLayout(self.layout_name)
         self.layout.addWidget(self.lbl)

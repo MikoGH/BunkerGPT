@@ -115,14 +115,14 @@ class Ui_MainWindowActions(MainWindow, QObject):
         self.ui.cards[player_name].dct_lbl_traits[trait].setText(f"<b>{get_traits_text(trait).capitalize()}:</b> {self.story.players[player_name].get_trait_info(trait)}")
 
     def signal_trait_explanation(self, player_name, message, trait):
-        widget_message = Message(self.story.players[player_name], message, trait)
+        widget_message = Message(self.story.players[player_name], message, config.get(language, "action_choosing_trait").capitalize(), trait)
         self.ui.chat.scrollLayout.addWidget(widget_message, alignment=Qt.AlignTop)
         
     def signal_vote(self, player_name, vote):
         pass
         
     def signal_vote_explanation(self, player_name, message, vote):
-        widget_message = Message(self.story.players[player_name], message, vote)
+        widget_message = Message(self.story.players[player_name], message, config.get(language, "action_voting").capitalize(), vote)
         self.ui.chat.scrollLayout.addWidget(widget_message, alignment=Qt.AlignTop)
         
     def signal_vote_results(self, message):

@@ -17,6 +17,8 @@ class Story():
         self.story_name = random.choice(list(data.keys()))
         self.story = data[self.story_name]
         self.places = (n_players+1) // 2
+        # создать лог
+        create_log()
 
     @property
     def active_players(self):

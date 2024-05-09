@@ -2,6 +2,8 @@ from configparser import ConfigParser
 import g4f
 import json
 import time
+import os
+import random
 from nltk.corpus import stopwords
 
 stop_words = stopwords.words("english")
@@ -26,10 +28,17 @@ def get_response(request, action = ''):
     # provider = g4f.Provider.You
     # model = "gpt-3.5-turbo"
     # provider = g4f.Provider.FreeChatgpt
-    time.sleep(2)
-    model = "gpt-3.5-turbo"
-    provider = g4f.Provider.Liaobots
+    # model = "gpt-3.5-turbo"
+    # provider = g4f.Provider.Liaobots
 
+    # model = "airoboros-70b"
+    # provider = g4f.Provider.DeepInfra
+    model = "gpt-3.5-turbo"
+    # provider = g4f.Provider.Ecosia
+    provider = g4f.Provider.DuckDuckGo
+    # provider = g4f.Provider.Aichatos
+
+    time.sleep(random.randint(1,3))
     response = g4f.ChatCompletion.create(
         model=model,
         messages=[{"role": "user", "content": request + ' ' + action}],
@@ -37,6 +46,7 @@ def get_response(request, action = ''):
         stream=True,
         provider=provider
     )
+
     return response
 
 # Возвращает данные из json 
@@ -81,3 +91,27 @@ def get_age_name(age):
     elif age < 60: return  config.get(language, "adult")
     else: return config.get(language, "old")
 
+# Создаёт новый файл с логами
+def create_log():
+    last_num = get_last_log_num()
+    next_num = str(int(last_num)+1)
+    next_num = next_num.zfill(4)
+    f = open("logs/log"+next_num+".txt", "w", encoding="UTF-8")
+    f.close()
+
+# Записывает лог в файл
+def write_log(player_name, response):
+    last_num = get_last_log_num()
+    f = open("logs/log"+last_num+".txt", "a", encoding="UTF-8")
+    f.write(player_name+"\n"+response+"\n\n")
+    f.close()
+
+# Возвращает номер последнего файла с логами
+def get_last_log_num():
+    directory = "logs"
+    files = os.listdir(directory)
+    if len(files) > 0:
+        last_num = sorted(files)[-1][3:-4]
+    else:
+        last_num = -1
+    return last_num

@@ -33,6 +33,9 @@ def choose_trait(story, player_name):
     response = ''.join(get_response(response, action=config.get(language, "main_info")))
     story.players[player_name].explanations[trait_chosen] = response
     story.players[player_name].known[trait_chosen] = True
+
+    # записать лог
+    write_log(player_name, message)
     return trait_chosen, message
 
 
@@ -52,4 +55,7 @@ def choose_player(story, player_name, voting):
                 name_chosen = sub_word
                 break
     voting[name_chosen] += 1
+    
+    # записать лог
+    write_log(player_name, response)
     return name_chosen, response, voting
