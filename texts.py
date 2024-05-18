@@ -17,9 +17,9 @@ class Text():
     # Получить запрос
     def get_request(story, player_name, action, trait=''):
         if action == 'vote':
-            return f'{Text.get_static_info(story)}\n{Text.get_players_info(story, player_name)}\n{Text.get_person_info(story, player_name)}\n{config.get(language, "vote")}. {config.get(language, "character")} {story.players[player_name].personality}. {config.get(language, "without_greetings") if list(story.players[player_name].known.values()).count(True) > 0 else ""}'
+            return f'{Text.get_static_info(story)}\n{Text.get_players_info(story, player_name)}\n{Text.get_person_info(story, player_name)}\n{config.get(language, "vote")}. {config.get(language, "without_greetings") if list(story.players[player_name].known.values()).count(True) > 0 else config.get(language, "with_greetings")}. {config.get(language, "character")} {story.players[player_name].personality}. {config.get(language, "character")}.'
         if action == 'explain trait':
-            return f'{Text.get_static_info(story)}\n{trait} - {config.get(language, "explain_trait")} {player_name}. {config.get(language, "character")} {story.players[player_name].personality}. {config.get(language, "without_greetings") if list(story.players[player_name].known.values()).count(True) > 0 else ""}'
+            return f'{Text.get_static_info(story)}\n{trait} - {config.get(language, "explain_trait")} {player_name} {config.get(language, "without_greetings") if list(story.players[player_name].known.values()).count(True) > 0 else config.get(language, "with_greetings")}. {config.get(language, "character")} {story.players[player_name].personality}. {config.get(language, "character")}.'
         if action == 'choose trait':
             return f'{Text.get_static_info(story)}\n{config.get(language, "choose_trait")}\n{'\n'.join(story.players[player_name].get_traits_info_list(only="unknown"))}'
         

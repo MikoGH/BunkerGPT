@@ -9,10 +9,11 @@ import nltk
 # !!! download
 # nltk.download('stopwords')
 
-app = QApplication(sys.argv)
+continue_game = False
 
+app = QApplication(sys.argv)
 mainWindow = QtWidgets.QMainWindow()
-ui = Ui_MainWindowActions(mainWindow, app)
+ui = Ui_MainWindowActions(mainWindow, app, continue_game)
 mainWindow.show()
 
 sys.exit(app.exec_())

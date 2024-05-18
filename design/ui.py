@@ -25,11 +25,14 @@ class Worker(QObject):
 
     @pyqtSlot()
     def run(self):
+        i = self.story.n_players - len(self.story.active_players)
         # Круг
-        for i in range(self.story.n_players - self.story.places):
+        while i < self.story.n_players - self.story.places:
+            # Сохранить игру
+            save_game(self.story)
             # Выбор черты для раскрытия
             for player_name in self.story.active_players.keys():
-                for _ in range(3 if i == 0 else 1):
+                for _ in range(2 if i == 0 else 1):
                     trait, message = choose_trait(self.story, player_name)
                     self.signal_trait.emit(player_name, trait)
                     self.signal_trait_explanation.emit(player_name, message, self.story.players[player_name].get_trait_info(trait))
@@ -69,16 +72,20 @@ class Worker(QObject):
 
             self.story.players[player_name].active = False
             self.signal_vote_expell.emit(player_name)
+            i += 1
         # Показать черты
         self.signal_end.emit()
         
 
 ''' Класс обработчик событий '''
 class Ui_MainWindowActions(MainWindow, QObject):
-    def __init__(self, mainWindow, app):  
+    def __init__(self, mainWindow, app, continue_game = False):  
         super().__init__()
         self.app = app      
-        self.story = Story(n_players=6) 
+        if continue_game:
+            self.story = load_game()
+        else:
+            self.story = Story(n_players=6) 
 
         self.mainWindow = mainWindow
         self.ui = StoryWindow()
@@ -131,6 +138,7 @@ class Ui_MainWindowActions(MainWindow, QObject):
 
     def signal_vote_expell(self, player_name):
         for trait in get_traits_keys():
+            self.story.players[player_name].known[trait] = True
             self.ui.cards[player_name].dct_lbl_traits[trait].setText(f"<b>{get_traits_text(trait).capitalize()}:</b> {self.story.players[player_name].get_trait_info(trait)}")
         self.ui.cards[player_name].update()
 

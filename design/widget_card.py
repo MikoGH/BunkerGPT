@@ -60,7 +60,7 @@ class Card(QWidget):
             # else:
             #     text = player.get_trait_info(trait)
             # lbl_trait.setText(f"<b>{get_traits_text(trait).capitalize()}:</b> {player.get_trait_info(trait)}")
-            lbl_trait.setText(f"<b>{get_traits_text(trait).capitalize()}:</b> ")
+            lbl_trait.setText(f"<b>{get_traits_text(trait).capitalize()}:</b> {player.get_trait_info(trait) if player.known[trait] else ''}")
             lbl_trait.setFont(QFont(fontName_regular, 9))
             lbl_trait.setMaximumWidth(self.width())
             lbl_trait.setWordWrap(True)

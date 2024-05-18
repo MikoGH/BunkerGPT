@@ -4,6 +4,8 @@ import json
 import time
 import os
 import random
+import pickle
+import json
 from nltk.corpus import stopwords
 
 stop_words = stopwords.words("english")
@@ -115,3 +117,14 @@ def get_last_log_num():
     else:
         last_num = -1
     return last_num
+
+# Сериализует историю в файл с сохранением
+def save_game(story):
+    with open('save.pkl', 'wb') as f:
+        pickle.dump(story, f)
+
+# Возвращает сохранение истории из файла с сохранением
+def load_game():
+    with open("save.pkl", "rb") as f:
+        story = pickle.load(f)
+    return story
