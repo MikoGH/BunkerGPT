@@ -27,7 +27,6 @@ config, language = set_locale()
 # action - что именно нужно сделать с текстом (сократить, ответить, пояснить и тд)
 def get_response(request, action = ''):
     # model = "gpt-4"
-    # provider = g4f.Provider.You
     # model = "gpt-3.5-turbo"
     # provider = g4f.Provider.FreeChatgpt
     # model = "gpt-3.5-turbo"
